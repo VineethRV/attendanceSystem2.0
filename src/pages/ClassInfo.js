@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import { useNavigate } from 'react-router-dom';
 import { classAPI, configAPI } from '../services/api';
 
 // Days of the week (6 days - Mon to Sat)
@@ -7,6 +8,7 @@ const DAYS = ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'
 const TIME_SLOTS = ['Slot 1', 'Slot 2', 'Slot 3', 'Slot 4', 'Slot 5', 'Slot 6'];
 
 const ClassInfo = () => {
+  const navigate = useNavigate();
   const [classes, setClasses] = useState([]);
   const [isLoadingClasses, setIsLoadingClasses] = useState(true);
   const [showAddModal, setShowAddModal] = useState(false);
@@ -326,6 +328,13 @@ const ClassInfo = () => {
                     disabled={isLoadingClasses}
                   >
                     View Schedule
+                  </button>
+                  <button 
+                    className="btn btn-success btn-small"
+                    onClick={() => navigate(`/subject-management/${classItem.id}`)}
+                    disabled={isLoadingClasses}
+                  >
+                    Manage Subjects
                   </button>
                   <button 
                     className="btn btn-secondary btn-small"

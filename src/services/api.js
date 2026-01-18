@@ -1,4 +1,4 @@
-const API_BASE_URL = 'http://localhost:5000/api';
+const API_BASE_URL = process.env.REACT_APP_API_URL || 'http://localhost:5001/api';
 
 // Helper function to get token from localStorage
 const getAuthToken = () => localStorage.getItem('authToken');
@@ -107,8 +107,35 @@ export const configAPI = {
     apiCall(`/config/room-ip/${id}`, { method: 'DELETE' })
 };
 
+// Subject APIs
+export const subjectAPI = {
+  getAllSubjects: (classId) => 
+    apiCall(`/subject/classes/${classId}/subjects`, { method: 'GET' }),
+
+  addSubject: (classId, subjectData) => 
+    apiCall(`/subject/classes/${classId}/subjects`, {
+      method: 'POST',
+      body: JSON.stringify(subjectData)
+    }),
+
+  updateSubject: (classId, subjectName, subjectData) => 
+    apiCall(`/subject/classes/${classId}/subjects/${encodeURIComponent(subjectName)}`, {
+      method: 'PUT',
+      body: JSON.stringify(subjectData)
+    }),
+
+  deleteSubject: (classId, subjectName) => 
+    apiCall(`/subject/classes/${classId}/subjects/${encodeURIComponent(subjectName)}`, { 
+      method: 'DELETE' 
+    }),
+
+  getAllTeachers: () => 
+    apiCall('/subject/teachers', { method: 'GET' })
+};
+
 export default {
   authAPI,
   classAPI,
-  configAPI
+  configAPI,
+  subjectAPI
 };

@@ -7,6 +7,7 @@ const pool = require('./config/database');
 const authRoutes = require('./routes/auth');
 const classInfoRoutes = require('./routes/classInfo');
 const configRoutes = require('./routes/config');
+const subjectInfoRoutes = require('./routes/subjectInfo');
 const authenticateToken = require('./middleware/auth');
 
 const app = express();
@@ -29,6 +30,7 @@ app.get('/api/health', (req, res) => {
 app.use('/api/auth', authRoutes);
 app.use('/api/class', classInfoRoutes);
 app.use('/api/config', configRoutes);
+app.use('/api/subject', subjectInfoRoutes);
 
 // Error handling middleware
 app.use((err, req, res, next) => {

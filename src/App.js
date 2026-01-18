@@ -7,6 +7,7 @@ import Register from './pages/Register';
 import Dashboard from './pages/Dashboard';
 import ClassInfo from './pages/ClassInfo';
 import Config from './pages/Config';
+import SubjectManagement from './pages/SubjectManagement';
 
 function App() {
   return (
@@ -21,6 +22,7 @@ function App() {
           <Route path="/dashboard" element={<Dashboard />} />
           <Route path="/class-info" element={<ClassInfo />} />
           <Route path="/config" element={<Config />} />
+          <Route path="/subject-management/:classId" element={<SubjectManagement />} />
         </Route>
         
         {/* Default redirect */}
