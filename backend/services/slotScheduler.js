@@ -142,13 +142,38 @@ function getSimulationStatus() {
   };
 }
 
+// Generate array of USNs from start to end
+function generateUSNArray(startUSN, endUSN) {
+  if (!startUSN || !endUSN) return [];
+  
+  // Extract prefix and numeric parts
+  // Assumes format like: 1RV23CS001
+  const startMatch = startUSN.match(/^(.+?)(\d+)$/);
+  const endMatch = endUSN.match(/^(.+?)(\d+)$/);
+  
+  if (!startMatch || !endMatch) return [];
+  
+  const prefix = startMatch[1];
+  const startNum = parseInt(startMatch[2]);
+  const endNum = parseInt(endMatch[2]);
+  const numLength = startMatch[2].length;
+  
+  const usns = [];
+  for (let i = startNum; i <= endNum; i++) {
+    const paddedNum = String(i).padStart(numLength, '0');
+    usns.push(prefix + paddedNum);
+  }
+  
+  return usns;
+}
+
 // Send message to master router
 async function sendToMasterRouter(address, message) {
   return new Promise((resolve, reject) => {
     const options = {
       hostname: address,
       port: 80,
-      path: '/',
+      path: '/start',
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
@@ -178,11 +203,19 @@ async function sendToMasterRouter(address, message) {
   });
 }
 
-// Query database for class_room_time_map entries matching the encoded day:slot
+// Query database for subject_time_map entries matching the encoded day:slot
 async function getScheduleEntries(encodedDayTime) {
   try {
     const [rows] = await pool.query(
-      'SELECT DTime, room, class FROM class_room_time_map WHERE DTime = ?',
+      `SELECT 
+        stm.DTime, 
+        csm.defaultRoom as room, 
+        stm.class,
+        csm.USNStart,
+        csm.USNEnd
+      FROM subject_time_map stm
+      LEFT JOIN class_student_map csm ON stm.class = csm.class
+      WHERE stm.DTime = ?`,
       [encodedDayTime]
     );
     return rows;
@@ -234,15 +267,17 @@ async function triggerSlotCheck() {
   const scheduleEntries = await getScheduleEntries(encodedDayTime);
   console.log(`📊 Found ${scheduleEntries.length} schedule entries`);
 
+  // Format data as tasks array with usns
+  const tasks = scheduleEntries
+    .filter(entry => entry.room && entry.USNStart && entry.USNEnd)
+    .map(entry => ({
+      address: entry.room,
+      usns: generateUSNArray(entry.USNStart, entry.USNEnd)
+    }));
+
   // Prepare data to send
   const dataToSend = {
-    timestamp: new Date().toISOString(),
-    day: currentDay,
-    dayName: dayNames[currentDay],
-    slot: slot,
-    time: currentTime,
-    encodedDayTime: encodedDayTime,
-    scheduleEntries: scheduleEntries
+    tasks: tasks
   };
 
   const messageJson = JSON.stringify(dataToSend, null, 2);

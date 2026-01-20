@@ -9,6 +9,7 @@ const classInfoRoutes = require('./routes/classInfo');
 const configRoutes = require('./routes/config');
 const subjectInfoRoutes = require('./routes/subjectInfo');
 const simulationRoutes = require('./routes/simulation');
+const attendanceRoutes = require('./routes/attendance');
 const authenticateToken = require('./middleware/auth');
 const { startScheduler, stopScheduler } = require('./services/slotScheduler');
 
@@ -34,6 +35,7 @@ app.use('/api/class', classInfoRoutes);
 app.use('/api/config', configRoutes);
 app.use('/api/subject', subjectInfoRoutes);
 app.use('/api/simulation', simulationRoutes);
+app.use('/api/attendance', attendanceRoutes);
 
 // Error handling middleware
 app.use((err, req, res, next) => {

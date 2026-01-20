@@ -26,6 +26,11 @@ const Navbar = () => {
           </Link>
         </li>
         <li>
+          <Link to="/view-attendance" className={isActive('/view-attendance')}>
+            View Attendance
+          </Link>
+        </li>
+        <li>
           <Link to="/config" className={isActive('/config')}>
             Config
           </Link>
