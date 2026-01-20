@@ -133,6 +133,15 @@ export const subjectAPI = {
     apiCall('/subject/teachers', { method: 'GET' })
 };
 
+// Attendance APIs
+export const attendanceAPI = {
+  getTeacherClasses: () => 
+    apiCall('/attendance/teacher-classes', { method: 'GET' }),
+
+  getClassAttendance: (className) => 
+    apiCall(`/attendance/class/${className}`, { method: 'GET' })
+};
+
 // Simulation APIs (for testing slot triggers)
 export const simulationAPI = {
   // Get current simulation status
@@ -173,5 +182,6 @@ export default {
   classAPI,
   configAPI,
   subjectAPI,
+  attendanceAPI,
   simulationAPI
 };

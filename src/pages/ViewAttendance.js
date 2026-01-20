@@ -17,11 +17,11 @@ function ViewAttendance() {
   const fetchTeacherClasses = async () => {
     try {
       setLoading(true);
-      const response = await api.get('/attendance/teacher-classes');
-      setClasses(response.data);
+      const data = await api.attendanceAPI.getTeacherClasses();
+      setClasses(data);
       setError('');
     } catch (err) {
-      setError(err.response?.data?.message || 'Error fetching classes');
+      setError(err.message || 'Error fetching classes');
       console.error('Error fetching classes:', err);
     } finally {
       setLoading(false);
@@ -31,12 +31,12 @@ function ViewAttendance() {
   const handleClassClick = async (className) => {
     try {
       setLoading(true);
-      const response = await api.get(`/attendance/class/${className}`);
-      setAttendanceData(response.data);
+      const data = await api.attendanceAPI.getClassAttendance(className);
+      setAttendanceData(data);
       setSelectedClass(className);
       setError('');
     } catch (err) {
-      setError(err.response?.data?.message || 'Error fetching attendance data');
+      setError(err.message || 'Error fetching attendance data');
       console.error('Error fetching attendance:', err);
     } finally {
       setLoading(false);
@@ -118,61 +118,10 @@ function ViewAttendance() {
 
             {loading ? (
               <p>Loading attendance data...</p>
-            ) : attendanceData ? (
-              <div className="table-container" style={{ overflowX: 'auto' }}>
-                <table style={{ minWidth: '100%', fontSize: '14px' }}>
-                  <thead>
-                    <tr>
-                      <th style={{ position: 'sticky', left: 0, background: '#f8f9fa', zIndex: 10 }}>
-                        USN
-                      </th>
-                      {attendanceData.dates.map((date) => (
-                        <th key={date} style={{ minWidth: '100px', textAlign: 'center' }}>
-                          {new Date(date).toLocaleDateString('en-GB', {
-                            day: '2-digit',
-                            month: 'short',
-                            year: 'numeric'
-                          })}
-                        </th>
-                      ))}
-                    </tr>
-                  </thead>
-                  <tbody>
-                    {attendanceData.usns.map((usn) => (
-                      <tr key={usn}>
-                        <td style={{ position: 'sticky', left: 0, background: 'white', fontWeight: '600', zIndex: 5 }}>
-                          {usn}
-                        </td>
-                        {attendanceData.dates.map((date) => (
-                          <td
-                            key={`${usn}-${date}`}
-                            style={{
-                              textAlign: 'center',
-                              backgroundColor: attendanceData.attendanceData[usn]?.[date] === 'P' 
-                                ? '#d4edda' 
-                                : attendanceData.attendanceData[usn]?.[date] === 'A'
-                                ? '#f8d7da'
-                                : '#f8f9fa',
-                              color: getStatusColor(attendanceData.attendanceData[usn]?.[date]),
-                              fontWeight: '600'
-                            }}
-                          >
-                            {attendanceData.attendanceData[usn]?.[date] || '-'}
-                          </td>
-                        ))}
-                      </tr>
-                    ))}
-                  </tbody>
-                </table>
-
-                {attendanceData.dates.length === 0 && (
-                  <p style={{ textAlign: 'center', padding: '20px', color: '#666' }}>
-                    No attendance records found for this class.
-                  </p>
-                )}
-              </div>
             ) : (
-              <p>No data available.</p>
+              <p style={{ textAlign: 'center', padding: '20px', color: '#666' }}>
+                Attendance table will be displayed here.
+              </p>
             )}
 
             <div style={{ marginTop: '20px', padding: '15px', background: '#f8f9fa', borderRadius: '8px' }}>
