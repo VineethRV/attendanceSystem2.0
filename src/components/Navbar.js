@@ -30,6 +30,11 @@ const Navbar = () => {
             Config
           </Link>
         </li>
+        <li>
+          <Link to="/simulation" className={isActive('/simulation')}>
+            🕐 Simulation
+          </Link>
+        </li>
       </ul>
 
       <div className="navbar-user">

@@ -8,6 +8,7 @@ import Dashboard from './pages/Dashboard';
 import ClassInfo from './pages/ClassInfo';
 import Config from './pages/Config';
 import SubjectManagement from './pages/SubjectManagement';
+import SimulationPanel from './pages/SimulationPanel';
 
 function App() {
   return (
@@ -23,6 +24,7 @@ function App() {
           <Route path="/class-info" element={<ClassInfo />} />
           <Route path="/config" element={<Config />} />
           <Route path="/subject-management/:classId" element={<SubjectManagement />} />
+          <Route path="/simulation" element={<SimulationPanel />} />
         </Route>
         
         {/* Default redirect */}

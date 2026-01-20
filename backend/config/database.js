@@ -13,7 +13,7 @@ const pool = mysql.createPool({
   queueLimit: 0
 });
 
-// Test connection
+// Test connection (don't exit on failure, allow server to run for non-DB features)
 pool.getConnection()
   .then(connection => {
     console.log('✅ MySQL Connected Successfully');
@@ -21,7 +21,8 @@ pool.getConnection()
   })
   .catch(error => {
     console.error('❌ MySQL Connection Error:', error.message);
-    process.exit(1);
+    console.warn('⚠️  Server will continue running but database features will not work');
+    // Don't exit - allow simulation and other non-DB features to work
   });
 
 module.exports = pool;

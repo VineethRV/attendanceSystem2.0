@@ -1,4 +1,4 @@
-const API_BASE_URL = process.env.REACT_APP_API_URL || 'http://localhost:5001/api';
+const API_BASE_URL = process.env.REACT_APP_API_URL || 'http://localhost:5000/api';
 
 // Helper function to get token from localStorage
 const getAuthToken = () => localStorage.getItem('authToken');
@@ -133,9 +133,45 @@ export const subjectAPI = {
     apiCall('/subject/teachers', { method: 'GET' })
 };
 
+// Simulation APIs (for testing slot triggers)
+export const simulationAPI = {
+  // Get current simulation status
+  getStatus: () => apiCall('/simulation/status', { method: 'GET' }),
+
+  // Set simulated time and optionally day (format: "HH:MM", day: 1-6)
+  setTime: (time, day = null) => 
+    apiCall('/simulation/set-time', {
+      method: 'POST',
+      body: JSON.stringify({ time, day })
+    }),
+
+  // Set simulated day only (1=Monday, 2=Tuesday, ..., 6=Saturday)
+  setDay: (day) => 
+    apiCall('/simulation/set-day', {
+      method: 'POST',
+      body: JSON.stringify({ day })
+    }),
+
+  // Clear simulation and use real time
+  clear: () => 
+    apiCall('/simulation/clear', { method: 'POST' }),
+
+  // Trigger a specific slot directly with optional day
+  triggerSlot: (slot, day = null) => 
+    apiCall('/simulation/trigger-slot', {
+      method: 'POST',
+      body: JSON.stringify({ slot, day })
+    }),
+
+  // Manually trigger the slot check
+  trigger: () => 
+    apiCall('/simulation/trigger', { method: 'POST' })
+};
+
 export default {
   authAPI,
   classAPI,
   configAPI,
-  subjectAPI
+  subjectAPI,
+  simulationAPI
 };
